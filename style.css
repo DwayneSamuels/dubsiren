@@ -17,6 +17,10 @@
     margin-top: 0;
 }
 
+.param-group label {
+    display: block;
+}
+
 footer {
     margin-top: 1em;
 }

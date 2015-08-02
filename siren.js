@@ -3,13 +3,17 @@
 "use strict";
 
 var source, delay, feedback, filter,
-    ctx = new window.AudioContext(),
     mainOscillator, modulationOscillator,
-    outputGain = ctx.createGain(), modulationGain = ctx.createGain(),
+    sirenPlaying = false,
+    ctx = new window.AudioContext(),
+    outputGain = ctx.createGain(),
+    modulationGain = ctx.createGain(),
     mainFrequencySlider = document.querySelector("input.mainFrequency"),
-    modulationFrequencySlider = document.querySelector("input.modulationFrequency");
+    modulationFrequencySlider = document.querySelector("input.modulationFrequency"),
+    modulationAmplitudeSlider = document.querySelector("input.modulationAmplitude"),
+    outputVolumeSlider = document.querySelector("input.volume");
 
-outputGain.gain.value = 1;
+outputGain.gain.value = outputVolumeSlider.value;
 outputGain.connect(ctx.destination);
 
 function updateMainFrequency() {
@@ -20,8 +24,14 @@ function updateModulationFrequency() {
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
 }
 
+function updateModulationAmplitude() {
+    modulationGain.gain.value = modulationAmplitudeSlider.value;
+}
 
-var sirenPlaying = false;
+
+outputVolumeSlider.addEventListener("input", function () {
+    outputGain.gain.value = outputVolumeSlider.value;
+});
 
 
 window.addEventListener("keydown", function(event) {
@@ -35,9 +45,10 @@ window.addEventListener("keydown", function(event) {
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
     modulationOscillator.connect(modulationGain);
     modulationGain.connect(mainOscillator.frequency);
-    modulationGain.gain.value = 10;
+    modulationGain.gain.value = modulationAmplitudeSlider.value;
     mainFrequencySlider.addEventListener("input", updateMainFrequency);
     modulationFrequencySlider.addEventListener("input", updateModulationFrequency);
+    modulationAmplitudeSlider.addEventListener("input", updateModulationAmplitude);
     mainOscillator.connect(outputGain);
     modulationOscillator.start();
     mainOscillator.start();
@@ -55,22 +66,33 @@ window.addEventListener("keyup", function(event) {
     modulationOscillator.stop();
 });
 
+var delayTimeSlider = document.querySelector('input.delayTime');
+delayTimeSlider.addEventListener('input', function(event) {
+    delay.delayTime.value = delayTimeSlider.value;
+});
+
+var delayFeedbackSlider = document.querySelector('input.delayFeedback');
+delayFeedbackSlider.addEventListener('input', function(event) {
+    feedback.gain.value = delayFeedbackSlider.value;
+});
+
 function createEcho(source) {
-  delay = delay || ctx.createDelay();
-  delay.delayTime.value = 0.5;
+    delay = delay || ctx.createDelay();
+    delay.delayTime.value = delayTimeSlider.value;
 
-  feedback = feedback || ctx.createGain();
-  feedback.gain.value = 0.4;
+    feedback = feedback || ctx.createGain();
+    feedback.gain.value = delayFeedbackSlider.value;
 
-  filter = filter || ctx.createBiquadFilter();
-  filter.frequency.value = 2000;
-  filter.frequency.linearRampToValueAtTime(1000, ctx.currentTime + 2);
+    filter = filter || ctx.createBiquadFilter();
+    filter.frequency.value = 2000;
+    filter.frequency.linearRampToValueAtTime(1000, ctx.currentTime + 2);
 
-  source.connect(delay);
-  delay.connect(filter);
-  filter.connect(feedback);
-  feedback.connect(ctx.destination);
-  feedback.connect(delay);
-  return delay;
+    source.connect(delay);
+    delay.connect(filter);
+    filter.connect(feedback);
+    feedback.connect(outputGain);
+    feedback.connect(delay);
+    return delay;
 }
+
 })();
