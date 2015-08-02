@@ -1,5 +1,9 @@
 .container {
-  margin: 1em;
+    margin: 1em;
+}
+
+.param-container {
+    overflow: hidden;
 }
 
 .param-group {
@@ -11,4 +15,8 @@
 
 .param-group h2 {
     margin-top: 0;
+}
+
+footer {
+    margin-top: 1em;
 }
