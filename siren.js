@@ -37,13 +37,18 @@ outputVolumeSlider.addEventListener("input", function () {
 window.addEventListener("keydown", function(event) {
     if (event.key !== " " || sirenPlaying === true) return;
     sirenPlaying = true;
+
     mainOscillator = ctx.createOscillator();
-    mainOscillator.type = "square";
+    mainOscillator.type = document.querySelector(
+        "input[name=mainOscillatorType]:checked").value;
     mainOscillator.frequency.value = mainFrequencySlider.value;
+
     modulationOscillator = ctx.createOscillator();
-    modulationOscillator.type = "sine";
+    modulationOscillator.type = document.querySelector(
+        "input[name=modulationOscillatorType]:checked").value;
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
     modulationOscillator.connect(modulationGain);
+
     modulationGain.connect(mainOscillator.frequency);
     modulationGain.gain.value = modulationAmplitudeSlider.value;
     mainFrequencySlider.addEventListener("input", updateMainFrequency);
@@ -84,8 +89,13 @@ function createEcho(source) {
     feedback.gain.value = delayFeedbackSlider.value;
 
     filter = filter || ctx.createBiquadFilter();
-    filter.frequency.value = 2000;
-    filter.frequency.linearRampToValueAtTime(1000, ctx.currentTime + 2);
+    var delayCutoffFrequencySlider = document.querySelector("input.delayCutoffFrequency");
+    filter.frequency.value = delayCutoffFrequencySlider.value;
+    filter.frequency.linearRampToValueAtTime(delayCutoffFrequencySlider.value - 1000, ctx.currentTime + 2);
+    delayCutoffFrequencySlider.addEventListener("input", function() {
+        filter.frequency.value = delayCutoffFrequencySlider.value;
+        filter.frequency.linearRampToValueAtTime(delayCutoffFrequencySlider.value - 1000, ctx.currentTime + 2);
+    });
 
     source.connect(delay);
     delay.connect(filter);
