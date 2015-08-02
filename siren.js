@@ -3,6 +3,7 @@
 "use strict";
 
 var source, delay, feedback, filter,
+    spacebar = 32,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
     ctx = new window.AudioContext(),
@@ -35,7 +36,7 @@ outputVolumeSlider.addEventListener("input", function () {
 
 
 window.addEventListener("keydown", function(event) {
-    if (event.key !== " " || sirenPlaying === true) return;
+    if (event.keyCode !== spacebar || sirenPlaying === true) return;
     sirenPlaying = true;
 
     mainOscillator = ctx.createOscillator();
@@ -61,7 +62,7 @@ window.addEventListener("keydown", function(event) {
 });
 
 window.addEventListener("keyup", function(event) {
-    if (event.key !== " " || sirenPlaying === false) return;
+    if (event.keyCode !== spacebar || sirenPlaying === false) return;
     sirenPlaying = false;
     mainFrequencySlider.removeEventListener("input", updateMainFrequency);
     mainOscillator.disconnect(outputGain);
