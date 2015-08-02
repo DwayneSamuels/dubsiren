@@ -71,7 +71,6 @@ function createEcho(source) {
   filter.connect(feedback);
   feedback.connect(ctx.destination);
   feedback.connect(delay);
-  source.connect(ctx.destination);
   return delay;
 }
 })();
