@@ -1,0 +1,14 @@
+.container {
+  margin: 1em;
+}
+
+.param-group {
+    float: left;
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin-right: 1em;
+}
+
+.param-group h2 {
+    margin-top: 0;
+}
