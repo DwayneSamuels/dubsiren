@@ -1,0 +1,23 @@
+{
+  "name": "dubsiren",
+  "version": "0.0.0",
+  "description": "Dub Siren built with the Web Audio API",
+  "main": "siren.js",
+  "scripts": {
+    "test": "testem"
+  },
+  "repository": {
+    "type": "git",
+    "url": "smeuh.org:git/dubsiren.git"
+  },
+  "keywords": [
+    "audio",
+    "dub",
+    "siren"
+  ],
+  "author": "Alex Marandon",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "testem": "~0.9.2"
+  }
+}
