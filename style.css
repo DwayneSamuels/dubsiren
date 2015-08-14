@@ -1,10 +1,26 @@
+html { 
+  background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+    font-family: sans-serif;
+    color: #F9DA00;
+    background-color: black;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 h1 {
     margin: 0;
 }
 
 .container {
     margin: 1em;
-    border: 3px solid silver;
+    border: 3px solid #00B000;
+    border-radius: 10px;
     padding: 1em;
 
 }
@@ -15,10 +31,13 @@ h1 {
 
 .param-group {
     float: left;
-    border: 1px solid #ccc;
+    border: 1px solid #00B000;
+    border-radius: 10px;
     padding: 1em;
     margin-top: 1em;
     margin-right: 1em;
+    background-color: black;
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .param-group h2 {
