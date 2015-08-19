@@ -4,4 +4,4 @@ test:
 	testem
 
 deploy:
-	scp index.html *.js *.css smeuh.org:www/delbor/siren/
+	scp -r img index.html *.js *.css smeuh.org:www/delbor/siren/

@@ -10,7 +10,7 @@ body {
     font-family: sans-serif;
     color: #F9DA00;
     background-color: black;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 h1 {
@@ -18,11 +18,9 @@ h1 {
 }
 
 .container {
-    margin: 1em;
     border: 3px solid #00B000;
     border-radius: 10px;
     padding: 1em;
-
 }
 
 .param-container {
