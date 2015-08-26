@@ -13,6 +13,10 @@ body {
     background: rgba(0, 0, 0, 0.2);
 }
 
+a {
+    color: #F9DA00;
+}
+
 h1 {
     margin: 0;
 }
