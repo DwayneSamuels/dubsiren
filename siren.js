@@ -2,7 +2,7 @@
 (function() {
 "use strict";
 
-var source, delay, feedback, filter,
+var delay, feedback, filter,
     spacebar = 32,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
@@ -36,7 +36,9 @@ outputVolumeSlider.addEventListener("input", function () {
 
 
 window.addEventListener("keydown", function(event) {
-    if (event.keyCode !== spacebar || sirenPlaying === true) return;
+    if (event.keyCode !== spacebar || sirenPlaying === true) {
+      return;
+    }
     sirenPlaying = true;
 
     mainOscillator = ctx.createOscillator();
@@ -62,7 +64,9 @@ window.addEventListener("keydown", function(event) {
 });
 
 window.addEventListener("keyup", function(event) {
-    if (event.keyCode !== spacebar || sirenPlaying === false) return;
+    if (event.keyCode !== spacebar || sirenPlaying === false) {
+      return;
+    }
     sirenPlaying = false;
     mainFrequencySlider.removeEventListener("input", updateMainFrequency);
     mainOscillator.disconnect(outputGain);
@@ -73,12 +77,12 @@ window.addEventListener("keyup", function(event) {
 });
 
 var delayTimeSlider = document.querySelector('input.delayTime');
-delayTimeSlider.addEventListener('input', function(event) {
+delayTimeSlider.addEventListener('input', function() {
     delay.delayTime.value = delayTimeSlider.value;
 });
 
 var delayFeedbackSlider = document.querySelector('input.delayFeedback');
-delayFeedbackSlider.addEventListener('input', function(event) {
+delayFeedbackSlider.addEventListener('input', function() {
     feedback.gain.value = delayFeedbackSlider.value;
 });
 
