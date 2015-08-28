@@ -1,3 +1,7 @@
 {
-    "framework": "mocha+chai"
+    "framework": "mocha+chai",
+    "src_files": [
+      "node_modules/js-fixtures/fixtures.js",
+      "tests.js"
+    ]
 }

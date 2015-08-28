@@ -1,5 +1,5 @@
 /* jshint browser: true */
-(function() {
+window.ZongoDubSiren = (function() {
 "use strict";
 
 var delay, feedback, filter,
@@ -110,4 +110,8 @@ function createEcho(source) {
     return delay;
 }
 
-})();
+return {
+  outputGain: outputGain
+};
+
+}());
