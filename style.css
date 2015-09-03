@@ -27,6 +27,19 @@ h1 {
     padding: 1em;
 }
 
+.big-buttons button {
+    border: 3px solid #00B000;
+    border-radius: 10px;
+    color: #F9DA00;
+    background-color: black;
+    font-size: 24px;
+    margin-right: 2em;
+}
+
+.clear {
+  clear: both;
+}
+
 .param-container {
     overflow: hidden;
 }

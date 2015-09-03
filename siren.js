@@ -35,8 +35,8 @@ outputVolumeSlider.addEventListener("input", function () {
 });
 
 
-window.addEventListener("keydown", function(event) {
-    if (event.keyCode !== spacebar || sirenPlaying === true) {
+function play() {
+    if (sirenPlaying === true) {
       return;
     }
     sirenPlaying = true;
@@ -61,10 +61,10 @@ window.addEventListener("keydown", function(event) {
     modulationOscillator.start();
     mainOscillator.start();
     createEcho(mainOscillator);
-});
+}
 
-window.addEventListener("keyup", function(event) {
-    if (event.keyCode !== spacebar || sirenPlaying === false) {
+function stop() {
+    if (sirenPlaying === false) {
       return;
     }
     sirenPlaying = false;
@@ -74,7 +74,24 @@ window.addEventListener("keyup", function(event) {
     modulationGain.disconnect(mainOscillator.frequency);
     mainOscillator.stop();
     modulationOscillator.stop();
+}
+
+
+window.addEventListener("keydown", function(evt) {
+    if (evt.keyCode === spacebar) {
+      play();
+    }
 });
+
+window.addEventListener("keyup", function(evt) {
+    if (evt.keyCode === spacebar) {
+      stop();
+    }
+});
+
+var playButton = document.getElementById("playButton");
+playButton.addEventListener("mousedown", play);
+playButton.addEventListener("mouseup", stop);
 
 var delayTimeSlider = document.querySelector('input.delayTime');
 delayTimeSlider.addEventListener('input', function() {
@@ -85,6 +102,9 @@ var delayFeedbackSlider = document.querySelector('input.delayFeedback');
 delayFeedbackSlider.addEventListener('input', function() {
     feedback.gain.value = delayFeedbackSlider.value;
 });
+
+var panicButton = document.getElementById("panicButton");
+panicButton.addEventListener("click", location.reload.bind(location));
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
