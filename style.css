@@ -1,70 +1,92 @@
-html { 
-  background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed; 
+html {
+  font-size: 15.9999984px;
+  line-height: 24px;
+  background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
-
 body {
-    font-family: sans-serif;
-    color: #F9DA00;
-    background-color: black;
-    background: rgba(0, 0, 0, 0.2);
+  font-family: sans-serif;
+  color: #F9DA00;
+  margin: 0;
+  margin-bottom: 0;
 }
-
 a {
-    color: #F9DA00;
+  color: #F9DA00;
 }
-
 h1 {
-    margin: 0;
+  margin: 0;
+  font-size: 36px;
 }
-
 .container {
-    border: 3px solid #00B000;
-    border-radius: 10px;
-    padding: 1em;
+  padding: 1em;
 }
-
 .big-buttons button {
-    margin-top: 1em;
-    border: 3px solid #00B000;
-    border-radius: 10px;
-    color: #F9DA00;
-    background-color: black;
-    font-size: 24px;
-    margin-right: 2em;
+  margin-top: 1em;
+  border: 1px solid rgba(0, 176, 0, 0.5);
+  color: #F9DA00;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 24px;
+  margin-right: 32px;
+  padding: 0 15.9999984px;
 }
-
 .clear {
   clear: both;
 }
-
 .param-container {
-    overflow: hidden;
+  overflow: hidden;
 }
-
 .param-group {
-    float: left;
-    border: 1px solid #00B000;
-    border-radius: 10px;
-    padding: 1em;
-    margin-top: 1em;
-    margin-right: 1em;
-    background-color: black;
-    background: rgba(0, 0, 0, 0.7);
+  float: left;
+  border: 1px solid rgba(0, 176, 0, 0.5);
+  margin-top: 1em;
+  margin-right: 1em;
+  background-color: black;
+  background: rgba(0, 0, 0, 0.7);
 }
-
 .param-group h2 {
-    margin-top: 0;
+  font-size: 24px;
+  margin-top: 0;
+  background: rgba(0, 176, 0, 0.5);
+  padding: 0.3em;
+  padding-left: 16px;
 }
-
 .param-group label {
-    display: block;
+  display: block;
+  line-height: 24px;
 }
-
+.param-group label,
+.param-group input {
+  margin: 0 1em;
+}
+.param-group input[type=range] {
+  vertical-align: bottom;
+  margin-left: 0;
+}
 footer {
-    margin-top: 1em;
-    size: 12px;
+  padding-left: 15.9999984px;
+  margin-top: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 176, 0, 0.5);
+}
+footer p.help-text {
+  float: left;
+}
+footer p.credit {
+  float: right;
+  margin-top: 1em;
+  size: 12px;
+  vertical-align: middle;
+  position: relative;
+  padding-right: 118px;
+}
+footer p.credit img {
+  position: absolute;
+  top: -30px;
+  right: 16px;
+}
+.clear {
+  clear: both;
 }

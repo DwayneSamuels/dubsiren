@@ -1,0 +1,111 @@
+@green: rgba(0, 176, 0, 0.5);
+@yellow: #F9DA00;
+@black: rgba(0, 0, 0, 0.2);
+@base-height: 24px;
+@base-font-size: @base-height * 0.6666666;
+@h1-size: 36px;
+@h2-size: 24px;
+
+html { 
+  font-size: @base-font-size;
+  line-height: @base-height;
+  background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+    font-family: sans-serif;
+    color: @yellow;
+    margin: 0;
+    margin-bottom: 0;
+}
+
+a {
+    color: @yellow;
+}
+
+h1 {
+    margin: 0;
+    font-size: @h1-size;
+}
+
+.container {
+    padding: 1em;
+}
+
+.big-buttons button {
+    margin-top: 1em;
+    border: 1px solid @green;
+    color: @yellow;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 24px;
+    margin-right: 32px;
+    padding: 0 @base-font-size;
+}
+
+.clear {
+  clear: both;
+}
+
+.param-container {
+    overflow: hidden;
+}
+
+.param-group {
+    float: left;
+    border: 1px solid  @green;
+    margin-top: 1em;
+    margin-right: 1em;
+    background-color: black;
+    background: rgba(0, 0, 0, 0.7);
+    h2 {
+        font-size: @h2-size;
+        margin-top: 0;
+        background: @green;
+        padding: 0.3em;
+        padding-left: 16px;
+    }
+    label {
+        display: block;
+        line-height: 24px;
+    }
+    label, input {
+        margin: 0 1em;
+    }
+    input[type=range] {
+        vertical-align: bottom;
+        margin-left: 0;
+    }
+}
+
+
+
+footer {
+    padding-left: @base-font-size;
+    margin-top: @base-height;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid  @green;
+    p.help-text {
+        float: left;
+    }
+    p.credit {
+        float: right;
+        margin-top: 1em;
+        size: 12px;
+        vertical-align: middle;
+        position: relative;
+        padding-right: 118px;
+        img {
+            position: absolute;
+            top: -30px;
+            right: 16px;
+        }
+    }
+}
+
+.clear {
+    clear: both;
+}
