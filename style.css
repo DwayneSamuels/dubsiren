@@ -19,9 +19,11 @@ a {
 h1 {
   margin: 0;
   font-size: 36px;
+  line-height: 36px;
 }
 .container {
   padding: 1em;
+  padding-right: 0;
 }
 .big-buttons button {
   margin-top: 1em;
@@ -37,14 +39,21 @@ h1 {
 }
 .param-container {
   overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  width: auto;
+  min-width: 0;
 }
 .param-group {
+  flex-grow: 1;
   float: left;
   border: 1px solid rgba(0, 176, 0, 0.5);
-  margin-top: 1em;
-  margin-right: 1em;
   background-color: black;
   background: rgba(0, 0, 0, 0.7);
+  margin-right: 15.9999984px;
+  margin-top: 15.9999984px;
 }
 .param-group h2 {
   font-size: 24px;
@@ -66,6 +75,7 @@ h1 {
   margin-left: 0;
 }
 footer {
+  margin-right: 1em;
   padding-left: 15.9999984px;
   margin-top: 24px;
   background: rgba(0, 0, 0, 0.7);
