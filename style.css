@@ -74,8 +74,13 @@ h1 {
   line-height: 24px;
 }
 .param-group label,
-.param-group input {
+.param-group input,
+canvas {
   margin: 0 1em;
+}
+canvas {
+  margin-top: 1em;
+  border: 1px solid silver;
 }
 .param-group input[type=range] {
   vertical-align: bottom;
