@@ -2,7 +2,7 @@
 window.ZongoDubSiren = (function() {
 "use strict";
 
-var delay, feedback, filter,
+var currentPreset, delay, feedback, filter,
     spacebar = 32,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
@@ -15,6 +15,35 @@ var delay, feedback, filter,
     outputVolumeSlider = document.querySelector("input.volume"),
     javascriptNode = ctx.createScriptProcessor(2048, 1, 1),
     analyser = ctx.createAnalyser();
+
+function presetIndex(presetNumber) {
+    return parseInt(presetNumber) - 1;
+}
+
+function initPresets() {
+    var currentPreset = localStorage.getItem("preset:current");
+    var presetRadioButtons = document.querySelectorAll("input[name=preset]");
+
+    if (!currentPreset) {
+        currentPreset = "1";
+    }
+    var currentPresetRadioButton = presetRadioButtons[presetIndex(currentPreset)];
+    currentPresetRadioButton.setAttribute("checked", "checked");
+    applyPreset(currentPreset);
+
+    presetRadioButtons.forEach(function(radioButton) {
+        radioButton.addEventListener("click", function() {
+            console.log("Select preset", radioButton.value);
+            currentPreset = radioButton.value;
+            localStorage.setItem("preset:current", currentPreset);
+            applyPreset(currentPreset);
+        });
+    });
+}
+
+function applyPreset(presetNumber) {
+    console.log("apply preset", presetNumber);
+}
 
 
 (function initVolumeMeter() {
@@ -154,6 +183,8 @@ delayFeedbackSlider.addEventListener('input', function() {
 
 var panicButton = document.getElementById("panicButton");
 panicButton.addEventListener("click", location.reload.bind(location));
+
+initPresets();
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
