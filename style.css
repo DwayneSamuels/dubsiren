@@ -124,3 +124,47 @@ footer p.credit img {
 .clear {
   clear: both;
 }
+
+@media screen and (max-width: 640px) {
+  body {
+    font-size: 12px;
+  }
+  h1 {
+    font-size: 16px;
+    padding: 1px;
+    line-height: 24px;
+  }
+  .container {
+    padding: 0;
+  }
+  .param-group {
+    margin: 0;
+  }
+  .param-group h2 {
+    font-size: 16px;
+    line-height: 10px;
+    margin-bottom: 0;
+  }
+  .param-group label {
+    display: inline-block;
+    margin: 0 0.5em;
+  }
+  .param-group input {
+    margin: 0 0.1em;
+  }
+  .param-group p {
+    margin: 0;
+  }
+  .param-group canvas {
+    margin: 5px 5px 0 5px;
+  }
+  .big-buttons button {
+    margin: 5px;
+  }
+  footer {
+    margin-top: 0;
+  }
+  footer p {
+    margin: 0 5px;
+  }
+}
