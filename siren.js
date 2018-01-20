@@ -138,7 +138,9 @@ window.addEventListener("keyup", function(evt) {
 
 var playButton = document.getElementById("playButton");
 playButton.addEventListener("mousedown", play);
+playButton.addEventListener("touchstart", play);
 playButton.addEventListener("mouseup", stop);
+playButton.addEventListener("touchend", play);
 
 var delayTimeSlider = document.querySelector('input.delayTime');
 delayTimeSlider.addEventListener('input', function() {
