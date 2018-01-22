@@ -2,6 +2,9 @@
 window.ZongoDubSiren = (function() {
 "use strict";
 
+ var $ = document.querySelector.bind(document),
+     $$ = document.querySelectorAll.bind(document);
+
 var currentPreset, delay, feedback, filter,
     spacebar = 32,
     mainOscillator, modulationOscillator,
@@ -9,10 +12,10 @@ var currentPreset, delay, feedback, filter,
     ctx = new window.AudioContext(),
     outputGain = ctx.createGain(),
     modulationGain = ctx.createGain(),
-    mainFrequencySlider = document.querySelector("input.mainFrequency"),
-    modulationFrequencySlider = document.querySelector("input.modulationFrequency"),
-    modulationAmplitudeSlider = document.querySelector("input.modulationAmplitude"),
-    outputVolumeSlider = document.querySelector("input.volume"),
+    mainFrequencySlider = $("input.mainFrequency"),
+    modulationFrequencySlider = $("input.modulationFrequency"),
+    modulationAmplitudeSlider = $("input.modulationAmplitude"),
+    outputVolumeSlider = $("input.volume"),
     javascriptNode = ctx.createScriptProcessor(2048, 1, 1),
     analyser = ctx.createAnalyser();
 
@@ -21,8 +24,8 @@ function presetIndex(presetNumber) {
 }
 
 function initPresets() {
-    var currentPreset = localStorage.getItem("preset:current");
-    var presetRadioButtons = document.querySelectorAll("input[name=preset]");
+    currentPreset = localStorage.getItem("preset:current");
+    var presetRadioButtons = $$("input[name=preset]");
 
     if (!currentPreset) {
         currentPreset = "1";
@@ -33,7 +36,6 @@ function initPresets() {
 
     presetRadioButtons.forEach(function(radioButton) {
         radioButton.addEventListener("click", function() {
-            console.log("Select preset", radioButton.value);
             currentPreset = radioButton.value;
             localStorage.setItem("preset:current", currentPreset);
             applyPreset(currentPreset);
@@ -118,13 +120,11 @@ function play() {
     sirenPlaying = true;
 
     mainOscillator = ctx.createOscillator();
-    mainOscillator.type = document.querySelector(
-        "input[name=mainOscillatorType]:checked").value;
+    mainOscillator.type = $("input.mainOscillatorType:checked").value;
     mainOscillator.frequency.value = mainFrequencySlider.value;
 
     modulationOscillator = ctx.createOscillator();
-    modulationOscillator.type = document.querySelector(
-        "input[name=modulationOscillatorType]:checked").value;
+    modulationOscillator.type = $("input.modulationOscillatorType:checked").value;
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
     modulationOscillator.connect(modulationGain);
 
@@ -171,12 +171,12 @@ playButton.addEventListener("touchstart", play);
 playButton.addEventListener("mouseup", stop);
 playButton.addEventListener("touchend", play);
 
-var delayTimeSlider = document.querySelector('input.delayTime');
+var delayTimeSlider = $('input.delayTime');
 delayTimeSlider.addEventListener('input', function() {
     delay.delayTime.value = delayTimeSlider.value;
 });
 
-var delayFeedbackSlider = document.querySelector('input.delayFeedback');
+var delayFeedbackSlider = $('input.delayFeedback');
 delayFeedbackSlider.addEventListener('input', function() {
     feedback.gain.value = delayFeedbackSlider.value;
 });
@@ -186,6 +186,17 @@ panicButton.addEventListener("click", location.reload.bind(location));
 
 initPresets();
 
+function storeInputValue(evt) {
+  var slider = evt.target;
+  var key = "preset:" + currentPreset + ":" + slider.className;
+  localStorage.setItem(key, slider.value);
+}
+
+var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType, .volume");
+inputs.forEach(function(input) {
+  input.addEventListener("change", storeInputValue);
+});
+
 function createEcho(source) {
     delay = delay || ctx.createDelay();
     delay.delayTime.value = delayTimeSlider.value;
@@ -194,7 +205,7 @@ function createEcho(source) {
     feedback.gain.value = delayFeedbackSlider.value;
 
     filter = filter || ctx.createBiquadFilter();
-    var delayCutoffFrequencySlider = document.querySelector("input.delayCutoffFrequency");
+    var delayCutoffFrequencySlider = $("input.delayCutoffFrequency");
     filter.frequency.value = delayCutoffFrequencySlider.value;
     filter.frequency.linearRampToValueAtTime(delayCutoffFrequencySlider.value - 1000, ctx.currentTime + 2);
     delayCutoffFrequencySlider.addEventListener("input", function() {
