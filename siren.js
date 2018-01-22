@@ -43,10 +43,6 @@ function initPresets() {
     });
 }
 
-function applyPreset(presetNumber) {
-    console.log("apply preset", presetNumber);
-}
-
 
 (function initVolumeMeter() {
     var canvasElement = document.getElementById("canvas");
@@ -196,6 +192,23 @@ var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorTy
 inputs.forEach(function(input) {
   input.addEventListener("change", storeInputValue);
 });
+
+function applyPreset(presetNumber) {
+  var prefix = "preset:" + presetNumber + ":";
+  var presetKeys = Object.keys(localStorage).forEach(function(key) {
+    if (key.indexOf(prefix) === 0) {
+      var className = key.replace(prefix, "");
+      var input = $("." + className);
+      var storedValue = localStorage.getItem(key);
+      if (input.type === "range") {
+        input.value = storedValue;
+      } else if (input.type === "radio") {
+        var selector = "." + className + "[value=" + storedValue + "]";
+        $(selector).checked = true;
+      }
+    }
+  });
+}
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
