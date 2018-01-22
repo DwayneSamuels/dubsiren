@@ -35,6 +35,14 @@ function initPresets() {
 
     if (!currentPreset) {
         currentPreset = "1";
+        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
+        inputs.forEach(function(input) {
+          ["1", "2", "3", "4"].forEach(function(preset) {
+            var key = "preset:" + preset + ":" + input.className;
+            localStorage.setItem(key, input.value);
+          })
+          input.addEventListener("change", storeInputValue);
+        });
     }
     var currentPresetRadioButton = presetRadioButtons[presetIndex(currentPreset)];
     currentPresetRadioButton.setAttribute("checked", "checked");
@@ -203,7 +211,7 @@ function storeInputValue(evt) {
   localStorage.setItem(key, slider.value);
 }
 
-var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType, .volume");
+var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType");
 inputs.forEach(function(input) {
   input.addEventListener("change", storeInputValue);
 });
