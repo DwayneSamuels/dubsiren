@@ -23,6 +23,12 @@ function presetIndex(presetNumber) {
     return parseInt(presetNumber) - 1;
 }
 
+function selectPreset(preset) {
+    currentPreset = preset;
+    localStorage.setItem("preset:current", currentPreset);
+    applyPreset(currentPreset);
+}
+
 function initPresets() {
     currentPreset = localStorage.getItem("preset:current");
     var presetRadioButtons = $$("input[name=preset]");
@@ -36,9 +42,7 @@ function initPresets() {
 
     presetRadioButtons.forEach(function(radioButton) {
         radioButton.addEventListener("click", function() {
-            currentPreset = radioButton.value;
-            localStorage.setItem("preset:current", currentPreset);
-            applyPreset(currentPreset);
+          selectPreset(radioButton.value);
         });
     });
 }
@@ -159,6 +163,17 @@ window.addEventListener("keyup", function(evt) {
     if (evt.keyCode === spacebar) {
       stop();
     }
+});
+
+
+window.addEventListener("keydown", function(evt) {
+  var evt = evt || window.event;
+  var keyCode = evt.which || evt.keyCode;
+  var preset = {49: "1", 50: "2", 51: "3", 52: "4"}[keyCode];
+  if (preset) {
+    selectPreset(preset);
+    $("input[name=preset][value='" + preset + "']").checked = true;
+  }
 });
 
 var playButton = document.getElementById("playButton");
