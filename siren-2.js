@@ -5,7 +5,7 @@ window.ZongoDubSiren = (function() {
 var $ = document.querySelector.bind(document),
     $$ = document.querySelectorAll.bind(document);
 
-var currentPreset, delay, feedback, filter,
+var currentPatch, delay, feedback, filter,
     spacebar = 32, numPadZero = 96,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
@@ -19,13 +19,13 @@ var currentPreset, delay, feedback, filter,
     delayFeedbackSlider = $('input.delayFeedback'),
     outputVolumeSlider = $("input.volume"),
     javascriptNode = ctx.createScriptProcessor(2048, 1, 1),
-    presetKeyMaps = getPresetKeyMaps(),
+    patchKeyMaps = getPatchKeyMaps(),
     analyser = ctx.createAnalyser();
 
 
-function getPresetKeyMaps() {
+function getPatchKeyMaps() {
   const upperRowOffset = 48, numPadOffset = 96;
-  const values = Array.from($$(".preset-selection input")).map(
+  const values = Array.from($$(".patch-selection input")).map(
     input => input.value
   );
   const numPadMap = values.reduce((map, value) => {
@@ -186,40 +186,40 @@ function initEchoSliders() {
 }
 
 
-function presetIndex(presetNumber) {
-    return parseInt(presetNumber) - 1;
+function patchIndex(patchNumber) {
+    return parseInt(patchNumber) - 1;
 }
 
 
-function selectPreset(preset) {
-    currentPreset = preset;
-    localStorage.setItem("preset:current", currentPreset);
-    applyPreset(currentPreset);
+function selectPatch(patch) {
+    currentPatch = patch;
+    localStorage.setItem("patch:current", currentPatch);
+    applyPatch(currentPatch);
 }
 
 
-function initPresets() {
-    currentPreset = localStorage.getItem("preset:current");
-    var presetRadioButtons = $$("input[name=preset]");
+function initPatches() {
+    currentPatch = localStorage.getItem("patch:current");
+    var patchRadioButtons = $$("input[name=patch]");
 
-    if (!currentPreset) {
-        currentPreset = "1";
+    if (!currentPatch) {
+        currentPatch = "1";
         var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
         inputs.forEach(function(input) {
-          Object.values(presetKeyMaps.upperRow).forEach(function(preset) {
-            var key = "preset:" + preset + ":" + input.className;
+          Object.values(patchKeyMaps.upperRow).forEach(function(patch) {
+            var key = "patch:" + patch + ":" + input.className;
             localStorage.setItem(key, input.value);
           })
           input.addEventListener("change", storeInputValue);
         });
     }
-    var currentPresetRadioButton = presetRadioButtons[presetIndex(currentPreset)];
-    currentPresetRadioButton.setAttribute("checked", "checked");
-    applyPreset(currentPreset);
+    var currentPatchRadioButton = patchRadioButtons[patchIndex(currentPatch)];
+    currentPatchRadioButton.setAttribute("checked", "checked");
+    applyPatch(currentPatch);
 
-    presetRadioButtons.forEach(function(radioButton) {
+    patchRadioButtons.forEach(function(radioButton) {
         radioButton.addEventListener("click", function() {
-          selectPreset(radioButton.value);
+          selectPatch(radioButton.value);
         });
     });
 
@@ -228,20 +228,20 @@ function initPresets() {
       input.addEventListener("change", storeInputValue);
     });
 
-    initPresetKeyBindings();
+    initPatchKeyBindings();
 }
 
 
 function storeInputValue(evt) {
   var slider = evt.target;
-  var key = "preset:" + currentPreset + ":" + slider.className;
+  var key = "patch:" + currentPatch + ":" + slider.className;
   localStorage.setItem(key, slider.value);
 }
 
 
-function applyPreset(presetNumber) {
-  var prefix = "preset:" + presetNumber + ":";
-  var presetKeys = Object.keys(localStorage).forEach(function(key) {
+function applyPatch(patchNumber) {
+  var prefix = "patch:" + patchNumber + ":";
+  var patchKeys = Object.keys(localStorage).forEach(function(key) {
     if (key.indexOf(prefix) === 0) {
       var className = key.replace(prefix, "");
       var input = $("." + className);
@@ -257,14 +257,14 @@ function applyPreset(presetNumber) {
 }
 
 
-function initPresetKeyBindings() {
+function initPatchKeyBindings() {
   window.addEventListener("keydown", function(evt) {
     var evt = evt || window.event;
     var keyCode = evt.which || evt.keyCode;
-    var preset = presetKeyMaps.upperRow[keyCode] || presetKeyMaps.numPad[keyCode];
-    if (preset) {
-      selectPreset(preset);
-      $("input[name=preset][value='" + preset + "']").checked = true;
+    var patch = patchKeyMaps.upperRow[keyCode] || patchKeyMaps.numPad[keyCode];
+    if (patch) {
+      selectPatch(patch);
+      $("input[name=patch][value='" + patch + "']").checked = true;
     }
   });
 }
@@ -302,7 +302,7 @@ function bindButtons() {
 
 initEchoSliders();
 initVolume();
-initPresets();
+initPatches();
 bindSpaceBar();
 bindButtons();
 
