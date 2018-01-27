@@ -7,13 +7,13 @@
 @h2-size: 24px;
 
 html { 
-  font-size: @base-font-size;
-  line-height: @base-height;
-  background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    font-size: @base-font-size;
+    line-height: @base-height;
+    background: url(img/zongo-eyes.jpg) no-repeat center 15% fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 body {
@@ -54,6 +54,17 @@ h1 {
     font-size: 24px;
     margin-right: 32px;
     padding: 0 @base-font-size;
+
+    /* Disable Disable long-touch/taphold text selection
+     * Cf. https://stackoverflow.com/a/11237968/348867
+     */
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
 .clear {
@@ -89,8 +100,12 @@ h1 {
         display: block;
         line-height: 24px;
     }
-    label, input {
+    label, input, canvas {
         margin: 0 1em;
+    }
+    canvas {
+      margin-top: 1em;
+      border: 1px solid silver;
     }
     input[type=range] {
         vertical-align: bottom;
@@ -126,4 +141,48 @@ footer {
 
 .clear {
     clear: both;
+}
+
+@media screen and (max-width: 640px) {
+  body {
+    font-size: 12px;
+  }
+  h1 {
+    font-size: 16px;
+    padding: 1px;
+    line-height: 24px;
+  }
+  .container {
+    padding: 0;
+  }
+  .param-group {
+    margin: 0;
+  }
+  .param-group h2 {
+    font-size: 16px;
+    line-height: 10px;
+    margin-bottom: 0;
+  }
+  .param-group label {
+    display: inline-block;
+    margin: 0 0.5em;
+  }
+  .param-group input {
+    margin: 0 0.1em;
+  }
+  .param-group p {
+    margin: 0;
+  }
+  .param-group canvas {
+    margin: 5px 5px 0 5px;
+  }
+  .big-buttons button {
+    margin: 5px;
+  }
+  footer {
+    margin-top: 0;
+  }
+  footer p {
+    margin: 0 5px;
+  }
 }
