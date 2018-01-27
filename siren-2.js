@@ -6,7 +6,7 @@ var $ = document.querySelector.bind(document),
     $$ = document.querySelectorAll.bind(document);
 
 var currentPreset, delay, feedback, filter,
-    spacebar = 32,
+    spacebar = 32, numPadZero = 96,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
     ctx = new window.AudioContext(),
@@ -19,7 +19,27 @@ var currentPreset, delay, feedback, filter,
     delayFeedbackSlider = $('input.delayFeedback'),
     outputVolumeSlider = $("input.volume"),
     javascriptNode = ctx.createScriptProcessor(2048, 1, 1),
+    presetKeyMaps = getPresetKeyMaps(),
     analyser = ctx.createAnalyser();
+
+
+function getPresetKeyMaps() {
+  const upperRowOffset = 48, numPadOffset = 96;
+  const values = Array.from($$(".preset-selection input")).map(
+    input => input.value
+  );
+  const numPadMap = values.reduce((map, value) => {
+    map[numPadOffset + parseInt(value)] = value;
+    return map;
+  }, {});
+  const upperRowMap = values.reduce((map, value) => {
+    map[upperRowOffset + parseInt(value)] = value;
+    return map;
+  }, {});
+  return {
+    numPad: numPadMap, upperRow: upperRowMap
+  };
+}
 
 
 function initVolume() {
@@ -186,7 +206,7 @@ function initPresets() {
         currentPreset = "1";
         var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
         inputs.forEach(function(input) {
-          ["1", "2", "3", "4"].forEach(function(preset) {
+          Object.values(presetKeyMaps.upperRow).forEach(function(preset) {
             var key = "preset:" + preset + ":" + input.className;
             localStorage.setItem(key, input.value);
           })
@@ -241,7 +261,7 @@ function initPresetKeyBindings() {
   window.addEventListener("keydown", function(evt) {
     var evt = evt || window.event;
     var keyCode = evt.which || evt.keyCode;
-    var preset = {49: "1", 50: "2", 51: "3", 52: "4"}[keyCode];
+    var preset = presetKeyMaps.upperRow[keyCode] || presetKeyMaps.numPad[keyCode];
     if (preset) {
       selectPreset(preset);
       $("input[name=preset][value='" + preset + "']").checked = true;
@@ -251,15 +271,16 @@ function initPresetKeyBindings() {
 
 
 function bindSpaceBar() {
+  var isPlayTrigger = evt => evt.keyCode === spacebar || evt.keyCode === numPadZero;
   window.addEventListener("keydown", function(evt) {
-      if (evt.keyCode === spacebar) {
+      if (isPlayTrigger(evt)) {
         play();
         evt.preventDefault();
       }
   });
 
   window.addEventListener("keyup", function(evt) {
-      if (evt.keyCode === spacebar) {
+      if (isPlayTrigger(evt)) {
         stop();
         evt.preventDefault();
       }
