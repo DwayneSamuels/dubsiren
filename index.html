@@ -10,23 +10,22 @@
     <div class="container">
       <h1>ZONGO DUB SIREN</h1>
       <div class="param-container">
-        <div class="param-group">
-          <h2>LFO</h2>
-          <label>Frequency<input class="modulationFrequency" min="0.1" max="2" step="0.1" value="1" type="range"><span class="valueDisplay"></label>
-          <label>Amplitude<input class="modulationAmplitude" min="1" max="500" step="1" value="200" type="range"><span class="valueDisplay"></label>
+        <div class="param-group preset-selection">
+          <h2>Presets</h2>
           <p>
-          <label>
-            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="sine" checked="checked">Sine
-          </label>
-          <label>
-            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="square">Square
-          </label>
-          <label>
-            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="triangle">Triangle
-          </label>
-          <label>
-            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="sawtooth">Sawtooth
-          </label>
+            <label>
+              <input type="radio" name="preset" value="1">Preset 1
+            </label>
+            <label>
+              <input type="radio" name="preset" value="2">Preset 2
+            </label>
+            <label>
+              <input type="radio" name="preset" value="3">Preset 3
+            </label>
+            <label>
+              <input type="radio" name="preset" value="4">Preset 4
+            </label>
+          </p>
         </div>
         <div class="param-group">
           <h2>Carrier</h2>
@@ -46,6 +45,24 @@
           </label>
         </div>
         <div class="param-group">
+          <h2>LFO</h2>
+          <label>Frequency<input class="modulationFrequency" min="0.1" max="2" step="0.1" value="1" type="range"><span class="valueDisplay"></label>
+          <label>Amplitude<input class="modulationAmplitude" min="1" max="500" step="1" value="200" type="range"><span class="valueDisplay"></label>
+          <p>
+          <label>
+            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="sine" checked="checked">Sine
+          </label>
+          <label>
+            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="square">Square
+          </label>
+          <label>
+            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="triangle">Triangle
+          </label>
+          <label>
+            <input type="radio" name="modulationOscillatorType" class="modulationOscillatorType" value="sawtooth">Sawtooth
+          </label>
+        </div>
+        <div class="param-group">
           <h2>Echo</h2>
           <p>
           <label>Delay<input class="delayTime" min="0.1" max="1" step="0.01" value="0.5" type="range"></label>
@@ -58,23 +75,6 @@
           <p>
           <label>Volume<input class="volume" min="0" max="1" step="0.01" value="0.8" type="range"></label>
           <canvas id="canvas" width="220" height="24"></canvas>
-          </p>
-        </div>
-        <div class="param-group preset-selection">
-          <h2>Presets</h2>
-          <p>
-            <label>
-              <input type="radio" name="preset" value="1">Preset 1
-            </label>
-            <label>
-              <input type="radio" name="preset" value="2">Preset 2
-            </label>
-            <label>
-              <input type="radio" name="preset" value="3">Preset 3
-            </label>
-            <label>
-              <input type="radio" name="preset" value="4">Preset 4
-            </label>
           </p>
         </div>
       </div>
