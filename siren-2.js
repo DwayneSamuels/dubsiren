@@ -164,12 +164,14 @@ function stop() {
 window.addEventListener("keydown", function(evt) {
     if (evt.keyCode === spacebar) {
       play();
+      evt.preventDefault();
     }
 });
 
 window.addEventListener("keyup", function(evt) {
     if (evt.keyCode === spacebar) {
       stop();
+      evt.preventDefault();
     }
 });
 
