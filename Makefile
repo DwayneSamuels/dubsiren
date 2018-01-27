@@ -19,7 +19,7 @@ develop:
 test:
 	testem
 
-deploy:
+deploy: build
 	cd build && scp -r img index.html *.js *.css smeuh.org:www/delbor/siren/
 
 css:
