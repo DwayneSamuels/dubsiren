@@ -2,8 +2,8 @@
 window.ZongoDubSiren = (function() {
 "use strict";
 
- var $ = document.querySelector.bind(document),
-     $$ = document.querySelectorAll.bind(document);
+var $ = document.querySelector.bind(document),
+    $$ = document.querySelectorAll.bind(document);
 
 var currentPreset, delay, feedback, filter,
     spacebar = 32,
@@ -15,48 +15,24 @@ var currentPreset, delay, feedback, filter,
     mainFrequencySlider = $("input.mainFrequency"),
     modulationFrequencySlider = $("input.modulationFrequency"),
     modulationAmplitudeSlider = $("input.modulationAmplitude"),
+    delayTimeSlider = $('input.delayTime'),
+    delayFeedbackSlider = $('input.delayFeedback'),
     outputVolumeSlider = $("input.volume"),
     javascriptNode = ctx.createScriptProcessor(2048, 1, 1),
     analyser = ctx.createAnalyser();
 
-function presetIndex(presetNumber) {
-    return parseInt(presetNumber) - 1;
-}
 
-function selectPreset(preset) {
-    currentPreset = preset;
-    localStorage.setItem("preset:current", currentPreset);
-    applyPreset(currentPreset);
-}
+function initVolume() {
+    outputGain.gain.value = outputVolumeSlider.value / 2.0;
+    javascriptNode.connect(ctx.destination);
+    outputGain.connect(ctx.destination);
+    outputGain.connect(analyser);
+    analyser.connect(javascriptNode);
 
-function initPresets() {
-    currentPreset = localStorage.getItem("preset:current");
-    var presetRadioButtons = $$("input[name=preset]");
-
-    if (!currentPreset) {
-        currentPreset = "1";
-        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
-        inputs.forEach(function(input) {
-          ["1", "2", "3", "4"].forEach(function(preset) {
-            var key = "preset:" + preset + ":" + input.className;
-            localStorage.setItem(key, input.value);
-          })
-          input.addEventListener("change", storeInputValue);
-        });
-    }
-    var currentPresetRadioButton = presetRadioButtons[presetIndex(currentPreset)];
-    currentPresetRadioButton.setAttribute("checked", "checked");
-    applyPreset(currentPreset);
-
-    presetRadioButtons.forEach(function(radioButton) {
-        radioButton.addEventListener("click", function() {
-          selectPreset(radioButton.value);
-        });
+    outputVolumeSlider.addEventListener("input", function () {
+        outputGain.gain.value = outputVolumeSlider.value / 2.0;
     });
-}
 
-
-(function initVolumeMeter() {
     var canvasElement = document.getElementById("canvas");
     var width = canvasElement.width, height = canvasElement.height;
     var canvas = canvasElement.getContext("2d");
@@ -80,7 +56,7 @@ function initPresets() {
         // create the meters
         canvas.fillRect(0, 0, (0 + average) * 1.8, height);
     }
-}());
+}
 
 
 function getAverageVolume(array) {
@@ -97,28 +73,20 @@ function getAverageVolume(array) {
     return average;
 }
 
-outputGain.gain.value = outputVolumeSlider.value / 2.0;
-javascriptNode.connect(ctx.destination);
-outputGain.connect(ctx.destination);
-outputGain.connect(analyser);
-analyser.connect(javascriptNode);
 
 function updateMainFrequency() {
     mainOscillator.frequency.value = mainFrequencySlider.value;
 }
 
+
 function updateModulationFrequency() {
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
 }
 
+
 function updateModulationAmplitude() {
     modulationGain.gain.value = modulationAmplitudeSlider.value;
 }
-
-
-outputVolumeSlider.addEventListener("input", function () {
-    outputGain.gain.value = outputVolumeSlider.value / 2.0;
-});
 
 
 function play() {
@@ -147,6 +115,7 @@ function play() {
     createEcho(mainOscillator);
 }
 
+
 function stop() {
     if (sirenPlaying === false) {
       return;
@@ -160,80 +129,6 @@ function stop() {
     modulationOscillator.stop();
 }
 
-
-window.addEventListener("keydown", function(evt) {
-    if (evt.keyCode === spacebar) {
-      play();
-      evt.preventDefault();
-    }
-});
-
-window.addEventListener("keyup", function(evt) {
-    if (evt.keyCode === spacebar) {
-      stop();
-      evt.preventDefault();
-    }
-});
-
-
-window.addEventListener("keydown", function(evt) {
-  var evt = evt || window.event;
-  var keyCode = evt.which || evt.keyCode;
-  var preset = {49: "1", 50: "2", 51: "3", 52: "4"}[keyCode];
-  if (preset) {
-    selectPreset(preset);
-    $("input[name=preset][value='" + preset + "']").checked = true;
-  }
-});
-
-var playButton = document.getElementById("playButton");
-playButton.addEventListener("mousedown", play);
-playButton.addEventListener("touchstart", play);
-playButton.addEventListener("mouseup", stop);
-playButton.addEventListener("touchend", play);
-
-var delayTimeSlider = $('input.delayTime');
-delayTimeSlider.addEventListener('input', function() {
-    delay.delayTime.value = delayTimeSlider.value;
-});
-
-var delayFeedbackSlider = $('input.delayFeedback');
-delayFeedbackSlider.addEventListener('input', function() {
-    feedback.gain.value = delayFeedbackSlider.value;
-});
-
-var panicButton = document.getElementById("panicButton");
-panicButton.addEventListener("click", location.reload.bind(location));
-
-initPresets();
-
-function storeInputValue(evt) {
-  var slider = evt.target;
-  var key = "preset:" + currentPreset + ":" + slider.className;
-  localStorage.setItem(key, slider.value);
-}
-
-var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType");
-inputs.forEach(function(input) {
-  input.addEventListener("change", storeInputValue);
-});
-
-function applyPreset(presetNumber) {
-  var prefix = "preset:" + presetNumber + ":";
-  var presetKeys = Object.keys(localStorage).forEach(function(key) {
-    if (key.indexOf(prefix) === 0) {
-      var className = key.replace(prefix, "");
-      var input = $("." + className);
-      var storedValue = localStorage.getItem(key);
-      if (input.type === "range") {
-        input.value = storedValue;
-      } else if (input.type === "radio") {
-        var selector = "." + className + "[value=" + storedValue + "]";
-        $(selector).checked = true;
-      }
-    }
-  });
-}
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
@@ -258,6 +153,137 @@ function createEcho(source) {
     feedback.connect(delay);
     return delay;
 }
+
+
+function initEchoSliders() {
+  delayTimeSlider.addEventListener('input', function() {
+      delay.delayTime.value = delayTimeSlider.value;
+  });
+
+  delayFeedbackSlider.addEventListener('input', function() {
+      feedback.gain.value = delayFeedbackSlider.value;
+  });
+}
+
+
+function presetIndex(presetNumber) {
+    return parseInt(presetNumber) - 1;
+}
+
+
+function selectPreset(preset) {
+    currentPreset = preset;
+    localStorage.setItem("preset:current", currentPreset);
+    applyPreset(currentPreset);
+}
+
+
+function initPresets() {
+    currentPreset = localStorage.getItem("preset:current");
+    var presetRadioButtons = $$("input[name=preset]");
+
+    if (!currentPreset) {
+        currentPreset = "1";
+        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
+        inputs.forEach(function(input) {
+          ["1", "2", "3", "4"].forEach(function(preset) {
+            var key = "preset:" + preset + ":" + input.className;
+            localStorage.setItem(key, input.value);
+          })
+          input.addEventListener("change", storeInputValue);
+        });
+    }
+    var currentPresetRadioButton = presetRadioButtons[presetIndex(currentPreset)];
+    currentPresetRadioButton.setAttribute("checked", "checked");
+    applyPreset(currentPreset);
+
+    presetRadioButtons.forEach(function(radioButton) {
+        radioButton.addEventListener("click", function() {
+          selectPreset(radioButton.value);
+        });
+    });
+
+    var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType");
+    inputs.forEach(function(input) {
+      input.addEventListener("change", storeInputValue);
+    });
+
+    initPresetKeyBindings();
+}
+
+
+function storeInputValue(evt) {
+  var slider = evt.target;
+  var key = "preset:" + currentPreset + ":" + slider.className;
+  localStorage.setItem(key, slider.value);
+}
+
+
+function applyPreset(presetNumber) {
+  var prefix = "preset:" + presetNumber + ":";
+  var presetKeys = Object.keys(localStorage).forEach(function(key) {
+    if (key.indexOf(prefix) === 0) {
+      var className = key.replace(prefix, "");
+      var input = $("." + className);
+      var storedValue = localStorage.getItem(key);
+      if (input.type === "range") {
+        input.value = storedValue;
+      } else if (input.type === "radio") {
+        var selector = "." + className + "[value=" + storedValue + "]";
+        $(selector).checked = true;
+      }
+    }
+  });
+}
+
+
+function initPresetKeyBindings() {
+  window.addEventListener("keydown", function(evt) {
+    var evt = evt || window.event;
+    var keyCode = evt.which || evt.keyCode;
+    var preset = {49: "1", 50: "2", 51: "3", 52: "4"}[keyCode];
+    if (preset) {
+      selectPreset(preset);
+      $("input[name=preset][value='" + preset + "']").checked = true;
+    }
+  });
+}
+
+
+function bindSpaceBar() {
+  window.addEventListener("keydown", function(evt) {
+      if (evt.keyCode === spacebar) {
+        play();
+        evt.preventDefault();
+      }
+  });
+
+  window.addEventListener("keyup", function(evt) {
+      if (evt.keyCode === spacebar) {
+        stop();
+        evt.preventDefault();
+      }
+  });
+}
+
+
+function bindButtons() {
+  var playButton = document.getElementById("playButton");
+  playButton.addEventListener("mousedown", play);
+  playButton.addEventListener("touchstart", play);
+  playButton.addEventListener("mouseup", stop);
+  playButton.addEventListener("touchend", play);
+
+  var panicButton = document.getElementById("panicButton");
+  panicButton.addEventListener("click", location.reload.bind(location));
+}
+
+
+initEchoSliders();
+initVolume();
+initPresets();
+bindSpaceBar();
+bindButtons();
 
 return {
   outputGain: outputGain
