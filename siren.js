@@ -2,6 +2,14 @@
 window.ZongoDubSiren = (function() {
 "use strict";
 
+var DEBUG = false;
+
+function log() {
+  if (DEBUG) {
+    console.log.apply(console, arguments);
+  }
+}
+
 var $ = document.querySelector.bind(document),
     $$ = document.querySelectorAll.bind(document);
 
@@ -101,7 +109,9 @@ function updateMainFrequency() {
 
 
 function updateModulationFrequency() {
+  if (modulationOscillator) {
     modulationOscillator.frequency.value = modulationFrequencySlider.value;
+  }
 }
 
 
@@ -176,9 +186,16 @@ function createEcho(source) {
 }
 
 
+function updateDelayTime() {
+  if (delay) {
+    delay.delayTime.value = delayTimeSlider.value;
+  }
+}
+
+
 function initEchoSliders() {
   delayTimeSlider.addEventListener('input', function() {
-      delay.delayTime.value = delayTimeSlider.value;
+    updateDelayTime();
   });
 
   delayFeedbackSlider.addEventListener('input', function() {
@@ -350,7 +367,7 @@ function initTapTempo() {
     return previousTime === null || inactiveFor(3);
   }
 
-  function computeTempo(argument) {
+  function computeTempo() {
     if (shouldResetTapTempo()) {
       tapTempoValueContainer.innerText = "---";
       previousTime = new Date();
@@ -358,16 +375,33 @@ function initTapTempo() {
     } else {
       var currentTime = new Date();
       var duration = (currentTime - previousTime); 
-      console.log("********************");
-      console.log("Duration", duration / 1000, "seconds");
-      var avgDuration = avg(duration);
-      console.log("Average duration", avgDuration);
-      console.log("Current BPM", durationToBpm(duration));
-      var averageBPM = durationToBpm(avgDuration);
-      console.log("Average BPM", averageBPM);
-      console.log("Average frequency", durationToHz(avgDuration));
+      log("********************");
+      log("Duration", duration / 1000, "seconds");
+      var averageDuration = avg(duration);
+      log("Average duration", averageDuration);
+      log("Current BPM", durationToBpm(duration));
+      var averageBPM = durationToBpm(averageDuration);
+      log("Average BPM", averageBPM);
+      var averageFrequency = durationToHz(averageDuration)
+      log("Average frequency", averageFrequency);
       tapTempoValueContainer.innerText = parseInt(averageBPM);
       previousTime = currentTime;
+      applyFrequency(averageFrequency);
+      applyDuration(averageDuration);
+    }
+  }
+
+  function applyFrequency(frequency) {
+    if ($(".modulationTapTempoSync").checked) {
+      modulationFrequencySlider.value = frequency;
+      updateModulationFrequency();
+    }
+  }
+
+  function applyDuration(duration) {
+    if ($(".delayTapTempoSync").checked) {
+      delayTimeSlider.value = duration / 1000;
+      updateDelayTime();
     }
   }
 
