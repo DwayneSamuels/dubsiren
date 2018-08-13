@@ -301,11 +301,96 @@ function bindButtons() {
 }
 
 
+function RunningAverage() {
+
+  // State is captured by closure
+  var numberCount = 1;
+  var currentAverage = 0;
+
+  // Return a function that computes a running average
+  return function(currentNumber) {
+    currentAverage += ((currentNumber - currentAverage) / numberCount);
+    numberCount++;
+    return currentAverage;
+  }
+
+}
+
+
+function initTapTempo() {
+
+  var previousTime = null,  // Time of the latest tap
+    tapTempoButton = $("#tapTempoButton"),
+    tapTempoValueContainer = $("#tapTempoValue"),
+    avg = RunningAverage();
+
+  function durationToBpm(duration) {
+    // Returns a tempo in BPM corresponding to a duration in milliseconds
+    // between two beats
+    return 60000 / duration;
+  }
+
+  function durationToHz(duration) {
+    // Returns a frequency in hertz corresponding to a duration in milliseconds
+    // between two beats
+    return durationToBpm(duration) / 60;
+  }
+
+  function inactiveFor(seconds) {
+    var currentTime = new Date();
+    return (currentTime - previousTime) > (seconds * 1000);
+  }
+
+  function shouldResetTapTempo() {
+    // Returns whether we should start computing a new tempo or not.
+    //
+    // We consider that after the timeout has expired, the current tempo can be
+    // discarded and we start computing a new tempo.
+    var timeout = 3;  // timeout in seconds
+    return previousTime === null || inactiveFor(3);
+  }
+
+  function computeTempo(argument) {
+    if (shouldResetTapTempo()) {
+      tapTempoValueContainer.innerText = "---";
+      previousTime = new Date();
+      avg = RunningAverage();
+    } else {
+      var currentTime = new Date();
+      var duration = (currentTime - previousTime); 
+      console.log("********************");
+      console.log("Duration", duration / 1000, "seconds");
+      var avgDuration = avg(duration);
+      console.log("Average duration", avgDuration);
+      console.log("Current BPM", durationToBpm(duration));
+      var averageBPM = durationToBpm(avgDuration);
+      console.log("Average BPM", averageBPM);
+      console.log("Average frequency", durationToHz(avgDuration));
+      tapTempoValueContainer.innerText = parseInt(averageBPM);
+      previousTime = currentTime;
+    }
+  }
+
+  tapTempoButton.addEventListener("click", function(evt) {
+    computeTempo();
+  });
+
+  window.addEventListener("keydown", function(evt) {
+    var evt = evt || window.event;
+    var keyCode = evt.which || evt.keyCode;
+    if (keyCode === tapTempoKeyCode) {
+      computeTempo();
+    }
+  });
+}
+
+
 initEchoSliders();
 initVolume();
 initPatches();
 bindSpaceBar();
 bindButtons();
+initTapTempo();
 
 return {
   outputGain: outputGain
