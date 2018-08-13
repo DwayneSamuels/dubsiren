@@ -7,6 +7,7 @@ var $ = document.querySelector.bind(document),
 
 var currentPatch, delay, feedback, filter,
     spacebar = 32, numPadZero = 96,
+    tapTempoKeyCode = 84, /* bind tap tempo to the t key */
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
     ctx = new window.AudioContext(),
