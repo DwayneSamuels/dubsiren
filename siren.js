@@ -163,7 +163,7 @@ function stop() {
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
-    delay.delayTime.value = delayTimeSlider.value;
+    updateDelayTime();
 
     feedback = feedback || ctx.createGain();
     feedback.gain.value = delayFeedbackSlider.value;
@@ -188,18 +188,28 @@ function createEcho(source) {
 
 function updateDelayTime() {
   if (delay) {
-    delay.delayTime.value = delayTimeSlider.value;
+    let selectedDelayFactorInput = $('input.delayFactor:checked')
+    let delayFactor = parseFloat(selectedDelayFactorInput.value);
+    let delayTime = delayTimeSlider.value * delayFactor;
+    delay.delayTime.value = delayTime;
   }
 }
 
 
-function initEchoSliders() {
+function initEchoControls() {
   delayTimeSlider.addEventListener('input', function() {
     updateDelayTime();
   });
 
   delayFeedbackSlider.addEventListener('input', function() {
       feedback.gain.value = delayFeedbackSlider.value;
+  });
+
+  var delayFactorInputs = $$(".delayFactor");
+  delayFactorInputs.forEach(function(delayFactorInput) {
+    delayFactorInput.addEventListener('change', function() {
+      updateDelayTime();
+    });
   });
 }
 
@@ -222,7 +232,7 @@ function initPatches() {
 
     if (!currentPatch) {
         currentPatch = "1";
-        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
+        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked, input.delayFactor:checked");
         inputs.forEach(function(input) {
           Object.values(patchKeyMaps.upperRow).forEach(function(patch) {
             var key = "patch:" + patch + ":" + input.className;
@@ -241,7 +251,7 @@ function initPatches() {
         });
     });
 
-    var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType");
+    var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType, input.delayFactor");
     inputs.forEach(function(input) {
       input.addEventListener("change", storeInputValue);
     });
@@ -267,7 +277,7 @@ function applyPatch(patchNumber) {
       if (input.type === "range") {
         input.value = storedValue;
       } else if (input.type === "radio") {
-        var selector = "." + className + "[value=" + storedValue + "]";
+        var selector = '.' + className + '[value="' + storedValue + '"]';
         $(selector).checked = true;
       }
     }
@@ -419,7 +429,7 @@ function initTapTempo() {
 }
 
 
-initEchoSliders();
+initEchoControls();
 initVolume();
 initPatches();
 bindSpaceBar();
