@@ -16,6 +16,7 @@ var $ = document.querySelector.bind(document),
 var currentPatch, delay, feedback, filter,
     spacebar = 32, numPadZero = 96,
     tapTempoKeyCode = 84, /* bind tap tempo to the t key */
+    delayFactorDownCode = 74, delayFactorUpCode = 75,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
     ctx = new window.AudioContext(),
@@ -344,6 +345,29 @@ function RunningAverage() {
 }
 
 
+function changeDelayFactor(siblingProperty) {
+  let selectedDelayFactorInput = $("input.delayFactor:checked");
+  let containingLabel = selectedDelayFactorInput.parentElement;
+  let siblingLabel = containingLabel[siblingProperty];
+  if (siblingLabel.className === "delayFactorLabel") {
+    let siblingInput = siblingLabel.querySelector("input.delayFactor");
+    siblingInput.checked = true;
+    siblingInput.dispatchEvent(new Event('change'))
+    updateDelayTime();
+  }
+}
+
+
+function increaseDelayFactor() {
+  changeDelayFactor("nextElementSibling");
+}
+
+
+function decreaseDelayFactor() {
+  changeDelayFactor("previousElementSibling");
+}
+
+
 function initTapTempo() {
 
   var previousTime = null,  // Time of the latest tap
@@ -424,6 +448,10 @@ function initTapTempo() {
     var keyCode = evt.which || evt.keyCode;
     if (keyCode === tapTempoKeyCode) {
       computeTempo();
+    } else if (keyCode === delayFactorDownCode) {
+      decreaseDelayFactor();
+    } else if (keyCode === delayFactorUpCode) {
+      increaseDelayFactor();
     }
   });
 }
