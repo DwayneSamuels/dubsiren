@@ -16,6 +16,7 @@ var $ = document.querySelector.bind(document),
 var currentPatch, delay, feedback, filter,
     spacebar = 32, numPadZero = 96,
     tapTempoKeyCode = 84, /* bind tap tempo to the t key */
+    delayFactorDownCode = 74, delayFactorUpCode = 75,
     mainOscillator, modulationOscillator,
     sirenPlaying = false,
     ctx = new window.AudioContext(),
@@ -163,7 +164,7 @@ function stop() {
 
 function createEcho(source) {
     delay = delay || ctx.createDelay();
-    delay.delayTime.value = delayTimeSlider.value;
+    updateDelayTime();
 
     feedback = feedback || ctx.createGain();
     feedback.gain.value = delayFeedbackSlider.value;
@@ -188,18 +189,28 @@ function createEcho(source) {
 
 function updateDelayTime() {
   if (delay) {
-    delay.delayTime.value = delayTimeSlider.value;
+    let selectedDelayFactorInput = $('input.delayFactor:checked')
+    let delayFactor = parseFloat(selectedDelayFactorInput.value);
+    let delayTime = delayTimeSlider.value * delayFactor;
+    delay.delayTime.value = delayTime;
   }
 }
 
 
-function initEchoSliders() {
+function initEchoControls() {
   delayTimeSlider.addEventListener('input', function() {
     updateDelayTime();
   });
 
   delayFeedbackSlider.addEventListener('input', function() {
       feedback.gain.value = delayFeedbackSlider.value;
+  });
+
+  var delayFactorInputs = $$(".delayFactor");
+  delayFactorInputs.forEach(function(delayFactorInput) {
+    delayFactorInput.addEventListener('change', function() {
+      updateDelayTime();
+    });
   });
 }
 
@@ -222,7 +233,7 @@ function initPatches() {
 
     if (!currentPatch) {
         currentPatch = "1";
-        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked");
+        var inputs = $$("input[type=range], .mainOscillatorType:checked, .modulationOscillatorType:checked, input.delayFactor:checked");
         inputs.forEach(function(input) {
           Object.values(patchKeyMaps.upperRow).forEach(function(patch) {
             var key = "patch:" + patch + ":" + input.className;
@@ -241,7 +252,7 @@ function initPatches() {
         });
     });
 
-    var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType");
+    var inputs = $$("input[type=range], .mainOscillatorType, .modulationOscillatorType, input.delayFactor");
     inputs.forEach(function(input) {
       input.addEventListener("change", storeInputValue);
     });
@@ -267,7 +278,7 @@ function applyPatch(patchNumber) {
       if (input.type === "range") {
         input.value = storedValue;
       } else if (input.type === "radio") {
-        var selector = "." + className + "[value=" + storedValue + "]";
+        var selector = '.' + className + '[value="' + storedValue + '"]';
         $(selector).checked = true;
       }
     }
@@ -331,6 +342,29 @@ function RunningAverage() {
     return currentAverage;
   }
 
+}
+
+
+function changeDelayFactor(siblingProperty) {
+  let selectedDelayFactorInput = $("input.delayFactor:checked");
+  let containingLabel = selectedDelayFactorInput.parentElement;
+  let siblingLabel = containingLabel[siblingProperty];
+  if (siblingLabel.className === "delayFactorLabel") {
+    let siblingInput = siblingLabel.querySelector("input.delayFactor");
+    siblingInput.checked = true;
+    siblingInput.dispatchEvent(new Event('change'))
+    updateDelayTime();
+  }
+}
+
+
+function increaseDelayFactor() {
+  changeDelayFactor("nextElementSibling");
+}
+
+
+function decreaseDelayFactor() {
+  changeDelayFactor("previousElementSibling");
 }
 
 
@@ -414,12 +448,16 @@ function initTapTempo() {
     var keyCode = evt.which || evt.keyCode;
     if (keyCode === tapTempoKeyCode) {
       computeTempo();
+    } else if (keyCode === delayFactorDownCode) {
+      decreaseDelayFactor();
+    } else if (keyCode === delayFactorUpCode) {
+      increaseDelayFactor();
     }
   });
 }
 
 
-initEchoSliders();
+initEchoControls();
 initVolume();
 initPatches();
 bindSpaceBar();
