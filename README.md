@@ -1,3 +1,4 @@
+## Dub Siren
 This is a simple Dub Siren built with vanilla JavaScript and the Web Audio API.
 
 Demo at http://siren.zongosound.com/
